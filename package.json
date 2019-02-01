@@ -1,0 +1,35 @@
+{
+  "name": "remax-images",
+  "version": "1.0.0",
+  "description": "Remax (Thailand) Images",
+  "main": "app.js",
+  "dependencies": {
+    "express": "^4.13.3",
+    "fs": "^0.0.2",
+    "gm": "^1.21.1",
+    "http": "^0.0.0",
+    "imagemin": "^6.0.0",
+    "imagemin-webp": "^4.1.0",
+    "md5-file": "^2.0.4",
+    "os": "^0.1.1",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RemaxThailand/Images.git"
+  },
+  "keywords": [
+    "Remax",
+    "Images"
+  ],
+  "author": "Remax (Thailand)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RemaxThailand/Images/issues"
+  },
+  "homepage": "https://github.com/RemaxThailand/Images#readme"
+}

@@ -1,0 +1,9 @@
+{
+  "name"             : "img",
+  "script"           : "/data/www/production/remaxthailand/img/app.js",
+  "error_file"       : "/data/www/log/remaxthailand/img.error.txt",
+  "out_file"         : "/data/www/log/remaxthailand/img.out.txt",
+  "instances"        : 4,
+  "watch"            : true,
+  "ignore_watch"      : ["[\\/\\\\]\\./", "node_modules", ".svn"],
+}
