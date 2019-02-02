@@ -65,8 +65,58 @@ app.get('*', function(req, res) {
 				}
 				else {
 					//console.log('generate '+ resizeName);
+					const sharp = require('sharp');
+					sharp(name).metadata().then(value => {
+						var box = value.width > value.height ? value.height/4 : value.width/4;
+						var textWidth = box*4/3;
+						var textHeight = textWidth/8;
+						var count = 5;
+						var boxSplit = value.height/count;
+						var gabX = ((value.width/2)-textWidth)/2;
+						var gabY = (boxSplit-textHeight)/2;
+						if (name.toLowerCase().indexOf('.gif') == -1) {
+						}
 
-					var gm = require('gm');
+						if ( hasResize ) { // ถ้า Url ที่ส่งมากำหนดขนาดมาด้วย
+							sharp(config.imageLogoPath)
+							.resize(box)
+							.sharpen()
+							.webp( { quality: 90 } )
+							.toBuffer()
+							.then((imgBuffer) => {
+								sharp(name)
+								.resize(width)
+								.overlayWith(imgBuffer, { gravity: sharp.gravity.southeast } )
+								.sharpen()
+								.webp( { quality: 90 } )
+								.toFile(resizeName)
+								.then(info => {
+									var stream = fs.createReadStream(resizeName);
+									stream.pipe(res);
+								});
+							});
+						}
+						else {
+							sharp(config.imageLogoPath)
+							.resize(box)
+							.sharpen()
+							.webp( { quality: 90 } )
+							.toBuffer()
+							.then((imgBuffer) => {
+								sharp(name)
+								.overlayWith(imgBuffer, { gravity: sharp.gravity.southeast } )
+								.sharpen()
+								.webp( { quality: 90 } )
+								.toFile(resizeName)
+								.then(info => {
+									var stream = fs.createReadStream(resizeName);
+									stream.pipe(res);
+								});
+							});
+						}
+					});
+
+					/*var gm = require('gm');
 					var img = gm(name);
 					img.size(function(err, value){				
 						var box = value.width > value.height ? value.height/4 : value.width/4;
@@ -108,6 +158,7 @@ app.get('*', function(req, res) {
 						}
 					});
 
+					*/
 
 				}
 			});
