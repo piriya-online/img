@@ -64,6 +64,7 @@ app.get('*', function(req, res) {
 					stream.pipe(res);
 				}
 				else {
+					purgeCache(`${resizePath.replace(config.imageResizePath,'')}/${imageName}`, 'prodathailand.com', 'comsci_erb@msn.com', 'f281bc6253510e22a44ce010dac9c7f6', '17eef9d92ac87294ba75636c0ea18821e810e');
 					//console.log('generate '+ resizeName);
 					const sharp = require('sharp');
 					sharp(name).metadata().then(value => {
@@ -115,51 +116,6 @@ app.get('*', function(req, res) {
 							});
 						}
 					});
-
-					/*var gm = require('gm');
-					var img = gm(name);
-					img.size(function(err, value){				
-						var box = value.width > value.height ? value.height/4 : value.width/4;
-						
-						var textWidth = box*4/3;
-						var textHeight = textWidth/8;
-						var count = 5;
-						var boxSplit = value.height/count;
-						var gabX = ((value.width/2)-textWidth)/2;
-						var gabY = (boxSplit-textHeight)/2;
-						if (name.toLowerCase().indexOf('.gif') == -1) {
-							for(i=0; i<count; i++){
-								img.draw(['image Over '+gabX+','+((boxSplit*i)+gabY)+' '+textWidth+','+(textWidth/8)+' '+config.imageTextPath]);
-								if ( i < count-1 ) {
-									img.draw(['image Over '+((value.width/2)+gabX)+','+((boxSplit*i)+gabY)+' '+textWidth+','+(textWidth/8)+' '+config.imageTextPath]);
-									img.draw(['image Over '+((value.width-textWidth)/2)+','+((boxSplit*(i+1))-(textHeight/2))+' '+textWidth+','+(textWidth/8)+' '+config.imageTextPath]);
-								}
-							}
-						}
-						
-						if ( hasResize ) {
-							img.draw(['image Over '+(value.width-box)+','+(value.height-box)+' '+box+','+box+' '+config.imageLogoPath])
-								.resize(width, height)
-								.comment('RemaxThailand')
-								.compress('Lossless')
-								.write(resizeName, function (err) {
-									var stream = fs.createReadStream(resizeName);
-									stream.pipe(res);
-								});
-						}
-						else {
-							img.draw(['image Over '+(value.width-box)+','+(value.height-box)+' '+box+','+box+' '+config.imageLogoPath])
-								.comment('RemaxThailand')
-								.compress('Lossless')
-								.write(resizeName, function (err) {
-									var stream = fs.createReadStream(resizeName);
-									stream.pipe(res);
-								});
-						}
-					});
-
-					*/
-
 				}
 			});
 		}
@@ -177,3 +133,33 @@ var server = http.createServer(app);
 server.listen(app.get('port'), function(){
 	console.log('Express server listening on port ' + app.get('port') + ' at '+os.hostname());
 });
+
+function purgeCache(path, domain, email, zone, key){
+  
+  var request = require("request");
+
+  var options = {
+    method: 'POST',
+    url: `https://api.cloudflare.com/client/v4/zones/${zone}/purge_cache`,
+    headers: {
+      'cache-control': 'no-cache',
+      'Content-Type': 'application/json',
+      'X-Auth-Email': email,
+      'X-Auth-Key': key
+    },
+    formData: {
+      'files[0]': `https://images.${domain}${path}`,
+      'files[1]': `https://img.${domain}${path}`,
+      'files[2]': `https://img.${domain}/50x50${path}`,
+      'files[3]': `https://img.${domain}/100x100${path}`,
+      'files[4]': `https://img.${domain}/300x300${path}`,
+      'files[5]': `https://img.${domain}/500x500${path}`
+    }
+  };
+
+  request(options, function (error, response, body) {
+    if (error) throw new Error(error);
+
+    console.log(body);
+  });
+}
